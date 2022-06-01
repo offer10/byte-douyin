@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/pandalzy/byte-douyin/api-client/initialization"
+	"github.com/offer10/byte-douyin/api-client/initialization"
 )
 
 func main() {

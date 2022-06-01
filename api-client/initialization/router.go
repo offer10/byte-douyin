@@ -2,7 +2,7 @@ package initialization
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pandalzy/byte-douyin/api-client/router"
+	"github.com/offer10/byte-douyin/api-client/router"
 )
 
 func SetupRouter() *gin.Engine {

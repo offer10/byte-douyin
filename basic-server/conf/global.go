@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	Mysql *gorm.DB
+	MySQL *gorm.DB
 )
