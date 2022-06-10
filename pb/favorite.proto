@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = ".;pb";
+package pb;
+
+message FavoriteActionRequest {
+  int64 videoID = 1;
+  int64 userID = 2;
+  int64 ActionType = 3;
+}
+
+message FavoriteActionResponse {
+}
+
+message FavoriteListRequest {
+  int64 userID = 1;
+}
+
+message FavoriteListResponse {
+  repeated int64 list = 1;
+}
+
+
+service FavoriteService {
+  rpc Action(FavoriteActionRequest) returns (FavoriteActionResponse);
+  rpc List(FavoriteListRequest) returns (FavoriteListResponse);
+}

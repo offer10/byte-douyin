@@ -10,6 +10,7 @@ func SetupRouter() *gin.Engine {
 
 	apiGroup := r.Group("/douyin")
 	router.RegisterUserRouter(apiGroup.Group("/user"))
+	router.RegisterFavoriteRouter(apiGroup.Group("/favorite"))
 
 	return r
 }
