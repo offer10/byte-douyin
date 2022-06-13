@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +27,8 @@ func NewUserController() IUserController {
 
 func (u UserController) Login(ctx *gin.Context) {
 	payload := request.UserLoginRequest{}
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	if err := ctx.ShouldBindQuery(&payload); err != nil {
+		fmt.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
@@ -73,7 +75,7 @@ func (u UserController) Login(ctx *gin.Context) {
 
 func (u UserController) Register(ctx *gin.Context) {
 	payload := request.UserRegisterRequest{}
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	if err := ctx.ShouldBindQuery(&payload); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,

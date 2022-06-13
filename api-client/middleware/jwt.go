@@ -12,8 +12,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		var code int
 		var data interface{}
 
-		token := ctx.Request.Header.Get("Authorization")
-		//token := ctx.Query("token")
+		token := ctx.Query("token")
 		if token == "" {
 			code = http.StatusUnauthorized
 			data = gin.H{

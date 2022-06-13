@@ -50,7 +50,6 @@ func (u FeedController) Feed(ctx *gin.Context) {
 			IsFavorite:    true,
 		})
 	}
-
 	ctx.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
 		"status_msg":  "",
