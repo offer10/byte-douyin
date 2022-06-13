@@ -57,3 +57,15 @@ func (p *FavoriteServerImpl) List(ctx context.Context, req *pb.FavoriteListReque
 	}
 	return reply, nil
 }
+
+func (p *FavoriteServerImpl) IsFav(ctx context.Context, req *pb.FavoriteIsFavRequest) (*pb.FavoriteIsFavResponse, error) {
+	isFav, err := FavoriteService.IsFav(req.UserID, req.VideoID)
+	if err != nil {
+		return nil, err
+	}
+
+	reply := &pb.FavoriteIsFavResponse{
+		IsFav: isFav,
+	}
+	return reply, nil
+}

@@ -21,8 +21,19 @@ message FavoriteListResponse {
   repeated int64 list = 1;
 }
 
+message FavoriteIsFavRequest {
+  int64 userID = 1;
+  int64 videoID = 2;
+}
+
+message FavoriteIsFavResponse {
+  bool isFav = 1;
+}
+
+
 
 service FavoriteService {
   rpc Action(FavoriteActionRequest) returns (FavoriteActionResponse);
   rpc List(FavoriteListRequest) returns (FavoriteListResponse);
+  rpc IsFav(FavoriteIsFavRequest) returns (FavoriteIsFavResponse);
 }

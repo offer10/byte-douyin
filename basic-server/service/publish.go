@@ -51,6 +51,7 @@ func (u PublishService) BatchGet(ids []int64) (list []model.Video, err error) {
 
 func (u PublishService) List(userID int64) (list []model.Video, err error) {
 	if err := conf.MySQL.Model(&model.Video{}).
+		Select("id, author_id, cover_url, play_url, favorite_count, title,( SELECT count(*) FROM comments WHERE video_id = videos.id ) AS comment_count ").
 		Where("author_id = ?", userID).
 		Find(&list).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

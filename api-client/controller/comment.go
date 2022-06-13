@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/offer10/byte-douyin/api-client/response"
@@ -25,7 +26,8 @@ func NewCommentController() ICommentController {
 
 func (u CommentController) Action(ctx *gin.Context) {
 	payload := request.CommentActionRequest{}
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	if err := ctx.ShouldBindQuery(&payload); err != nil {
+		fmt.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
@@ -33,6 +35,7 @@ func (u CommentController) Action(ctx *gin.Context) {
 		})
 		return
 	}
+	payload.UserId = GetLoginUserId(ctx)
 	if payload.ActionType == 1 {
 		resp, err := service.CommentClient.Action(ctx, &pb.CommentActionRequest{
 			VideoID:     payload.VideoId,
@@ -101,7 +104,7 @@ func (u CommentController) List(ctx *gin.Context) {
 	// 组装数据返回
 	commentList := response.CommentList{}
 	for _, comment := range resp.List {
-		user, _ := GetUser(ctx, comment.UserId, 0)
+		user, _ := GetUser(ctx, comment.UserId, GetLoginUserId(ctx))
 		commentList = append(commentList, response.Comment{
 			Id:         comment.Id,
 			Content:    comment.Content,
@@ -111,10 +114,14 @@ func (u CommentController) List(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"status_code": 0,
-		"status_msg":  nil,
-		"video_list":  commentList,
+		"status_code":  0,
+		"status_msg":   nil,
+		"comment_list": commentList,
 	})
+}
+
+func GetLoginUserId(ctx *gin.Context) int64 {
+	return ctx.GetInt64("user_id")
 }
 
 func GetUser(ctx context.Context, userId int64, seeId int64) (user response.User, err error) {
@@ -130,6 +137,7 @@ func GetUser(ctx context.Context, userId int64, seeId int64) (user response.User
 		Name:          resp.Name,
 		FollowerCount: resp.FollowerCount,
 		FollowCount:   resp.FollowCount,
+		IsFollow:      resp.IsFollow,
 	}
 
 	return user, nil

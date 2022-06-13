@@ -2,6 +2,8 @@ package controller
 
 import (
 	"crypto/md5"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
@@ -10,10 +12,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path"
-	"strconv"
-
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"time"
 )
 
@@ -31,13 +29,11 @@ func NewPublishController() IPublishController {
 func (u PublishController) Action(ctx *gin.Context) {
 	form, err := ctx.MultipartForm()
 	title := form.Value["title"]
-	authorID := form.Value["author_id"]
-	userId, err1 := strconv.ParseInt(authorID[0], 10, 64)
-
-	file, err2 := ctx.FormFile("file")
-	if err1 != nil || err2 != nil {
+	userId := GetLoginUserId(ctx)
+	file, err := ctx.FormFile("data")
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error":       err2.Error(),
+			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
 			"status_msg":  nil,
 		})
@@ -45,6 +41,7 @@ func (u PublishController) Action(ctx *gin.Context) {
 	}
 
 	ossUrl, err := UploadFile(file)
+	fmt.Println(err)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
@@ -132,7 +129,8 @@ func (u PublishController) List(ctx *gin.Context) {
 	// 组装数据返回
 	videoList := response.VideoList{}
 	for _, video := range resp.List {
-		user, _ := GetUser(ctx, video.AuthorId, 0)
+		user, _ := GetUser(ctx, video.AuthorId, GetLoginUserId(ctx))
+		isFav, _ := GetIsFav(ctx, GetLoginUserId(ctx), video.Id)
 		videoList = append(videoList, response.Video{
 			Author:        user,
 			Id:            video.Id,
@@ -141,7 +139,7 @@ func (u PublishController) List(ctx *gin.Context) {
 			FavoriteCount: video.FavoriteCount,
 			CommentCount:  video.CommentCount,
 			Title:         video.Title,
-			IsFavorite:    true,
+			IsFavorite:    isFav,
 		})
 	}
 	ctx.JSON(http.StatusOK, gin.H{

@@ -75,7 +75,7 @@ func (u RelationController) FollowList(ctx *gin.Context) {
 
 	followList := response.UserList{}
 	for _, id := range resp.GetFollowIDList() {
-		user, _ := GetUser(ctx, id, 0)
+		user, _ := GetUser(ctx, id, GetLoginUserId(ctx))
 		followList = append(followList, user)
 	}
 	ctx.JSON(http.StatusOK, gin.H{
@@ -108,7 +108,7 @@ func (u RelationController) FollowerList(ctx *gin.Context) {
 
 	followerList := response.UserList{}
 	for _, id := range resp.GetFollowerIDList() {
-		user, _ := GetUser(ctx, id, 0)
+		user, _ := GetUser(ctx, id, GetLoginUserId(ctx))
 		followerList = append(followerList, user)
 	}
 

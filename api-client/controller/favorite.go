@@ -4,6 +4,7 @@ import (
 	"github.com/offer10/byte-douyin/api-client/response"
 	"net/http"
 
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/service"
@@ -23,7 +24,8 @@ func NewFavoriteController() IFavoriteController {
 
 func (u FavoriteController) Action(ctx *gin.Context) {
 	payload := request.FavoriteActionRequest{}
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	payload.UserId = GetLoginUserId(ctx)
+	if err := ctx.ShouldBindQuery(&payload); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
@@ -90,6 +92,7 @@ func (u FavoriteController) List(ctx *gin.Context) {
 	videoList := response.VideoList{}
 	for _, video := range resp2.List {
 		user, _ := GetUser(ctx, video.AuthorId, 0)
+		isFav, _ := GetIsFav(ctx, GetLoginUserId(ctx), video.Id)
 		videoList = append(videoList, response.Video{
 			Author:        user,
 			Id:            video.Id,
@@ -98,7 +101,7 @@ func (u FavoriteController) List(ctx *gin.Context) {
 			FavoriteCount: video.FavoriteCount,
 			CommentCount:  video.CommentCount,
 			Title:         video.Title,
-			IsFavorite:    true,
+			IsFavorite:    isFav,
 		})
 	}
 
@@ -107,4 +110,16 @@ func (u FavoriteController) List(ctx *gin.Context) {
 		"status_msg":  nil,
 		"video_list":  videoList,
 	})
+}
+
+func GetIsFav(ctx context.Context, userId int64, videoId int64) (isFav bool, err error) {
+	resp, err := service.FavoriteClient.IsFav(ctx, &pb.FavoriteIsFavRequest{
+		UserID:  userId,
+		VideoID: videoId,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	return resp.IsFav, nil
 }

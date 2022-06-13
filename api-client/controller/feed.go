@@ -20,6 +20,7 @@ func NewFeedController() IFeedController {
 }
 func (u FeedController) Feed(ctx *gin.Context) {
 	var latestTime, nextTime int64
+	//payload := request.FeedRequest{}
 	latestTime_ := ctx.Query("latest_time")
 	if latestTime_ != "" {
 		latestTime, _ = strconv.ParseInt(latestTime_, 10, 64)
@@ -38,7 +39,8 @@ func (u FeedController) Feed(ctx *gin.Context) {
 	}
 	videoList := response.VideoList{}
 	for _, video := range resp.List {
-		user, _ := GetUser(ctx, video.AuthorId, 0)
+		user, _ := GetUser(ctx, video.AuthorId, GetLoginUserId(ctx))
+		isFav, _ := GetIsFav(ctx, GetLoginUserId(ctx), video.Id)
 		videoList = append(videoList, response.Video{
 			Author:        user,
 			Id:            video.Id,
@@ -47,9 +49,14 @@ func (u FeedController) Feed(ctx *gin.Context) {
 			FavoriteCount: video.FavoriteCount,
 			CommentCount:  video.CommentCount,
 			Title:         video.Title,
-			IsFavorite:    true,
+			IsFavorite:    isFav,
 		})
-	}
+	} //TODO 根据id获取视频
+	//if len(videoList)-1 < 0 {
+	//	nextTime = 0
+	//} else {
+	//	nextTime = GetModelVideoByID(videoList[len(videoList)-1].Id).CreatedAt.Unix()
+	//}
 	ctx.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
 		"status_msg":  "",
@@ -57,3 +64,8 @@ func (u FeedController) Feed(ctx *gin.Context) {
 		"video_list":  videoList,
 	})
 }
+
+//func GetModelVideoByID(id int64) (video *model.Video) {
+//	conf.MySQL.Model(&model.Video{}).Where("id = ?", id).First(&video)
+//	return video
+//}

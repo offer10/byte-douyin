@@ -56,7 +56,7 @@ func (u UserController) Login(ctx *gin.Context) {
 		})
 		return
 	}
-	token, err := util.GenerateToken(payload.Username, payload.Password)
+	token, err := util.GenerateToken(resp.UserID, payload.Username, payload.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error":       err.Error(),
@@ -95,7 +95,7 @@ func (u UserController) Register(ctx *gin.Context) {
 		})
 		return
 	}
-	token, err := util.GenerateToken(payload.Username, payload.Password)
+	token, err := util.GenerateToken(resp.UserID, payload.Username, payload.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -111,9 +111,13 @@ func (u UserController) Register(ctx *gin.Context) {
 }
 
 func (u UserController) Info(ctx *gin.Context) {
+
+	user, _ := GetUser(ctx, GetLoginUserId(ctx), 0)
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
 		"status_msg":  nil,
+		"user":        user,
 		"username":    ctx.GetString("username"),
 		"user_id":     ctx.GetInt64("user_id"),
 	})

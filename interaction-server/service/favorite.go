@@ -13,6 +13,7 @@ type IFavoriteService interface {
 	UpdateLike(fav *model.Favorite) error
 	UpdateDisLike(fav *model.Favorite) error
 	List(userID int64) (videoIds []int64, err error)
+	IsFav(userID int64, videoId int64) (isFav bool, err error)
 }
 type FavoriteService struct{}
 
@@ -75,4 +76,20 @@ func (u FavoriteService) List(userID int64) (videoIds []int64, err error) {
 	}
 
 	return videoIds, err
+}
+
+func (u FavoriteService) IsFav(UserID int64, videoId int64) (isFav bool, err error) {
+	var count int64
+	if err := conf.MySQL.Model(&model.Favorite{}).
+		Where("user_id = ? AND video_id = ?", UserID, videoId).
+		Count(&count).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return false, nil
+		}
+		return false, err
+	}
+	if count > 0 {
+		return true, nil
+	}
+	return false, err
 }
