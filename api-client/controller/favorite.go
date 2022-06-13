@@ -61,7 +61,7 @@ func (u FavoriteController) List(ctx *gin.Context) {
 		})
 		return
 	}
-	resp, err := service.FavoriteClient.List(ctx, &pb.FavoriteListRequest{
+	resp1, err := service.FavoriteClient.List(ctx, &pb.FavoriteListRequest{
 		UserID: payload.UserId,
 	})
 	if err != nil {
@@ -73,12 +73,32 @@ func (u FavoriteController) List(ctx *gin.Context) {
 		return
 	}
 
+	resp2, err := service.PublishClient.BatchGet(ctx, &pb.PublishBatchGetRequest{
+		Ids: resp1.List,
+	})
+
+	if resp2 == nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status_code": 0,
+			"status_msg":  nil,
+			"video_list":  nil,
+		})
+		return
+	}
+
 	// 组装数据返回
 	videoList := response.VideoList{}
-	for _, id := range resp.List {
+	for _, video := range resp2.List {
+		user, _ := GetUser(ctx, video.AuthorId, 0)
 		videoList = append(videoList, response.Video{
-			Id:         id,
-			IsFavorite: true,
+			Author:        user,
+			Id:            video.Id,
+			PlayUrl:       video.PlayUrl,
+			CoverUrl:      video.CoverUrl,
+			FavoriteCount: video.FavoriteCount,
+			CommentCount:  video.CommentCount,
+			Title:         video.Title,
+			IsFavorite:    true,
 		})
 	}
 

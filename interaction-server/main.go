@@ -14,6 +14,7 @@ func main() {
 	initialization.RegisterMySQL()
 	server := grpc.NewServer()
 	pb.RegisterFavoriteServiceServer(server, &controller.FavoriteServerImpl{})
+	pb.RegisterCommentServiceServer(server, &controller.CommentServerImpl{})
 	listen, err := net.Listen("tcp", ":50052")
 	if err != nil {
 		log.Fatalf("user service init error: %v", err)

@@ -12,11 +12,3 @@ type Video struct {
 	IsFavorite    bool   `json:"is_favorite"`
 	Title         string `json:"title"`
 }
-
-type User struct {
-	Id            string `json:"id"`
-	Name          string `json:"name"`
-	FollowCount   int64  `json:"follow_count"`
-	FollowerCount int64  `json:"follower_count"`
-	IsFollow      bool   `json:"is_follow"`
-}

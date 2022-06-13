@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option go_package = ".;pb";
+package pb;
+
+message PublishActionRequest {
+  string title = 1;
+  int64 authorID = 2;
+  string playUrl = 3;
+  string coverUrl = 4;
+}
+
+message PublishActionResponse {
+  int64  VideoID = 1;
+}
+
+
+message PublishListRequest {
+  int64 userID = 1;
+}
+
+message PublishListResponse {
+  repeated Video list = 1;
+}
+
+
+message PublishBatchGetRequest {
+  repeated int64 Ids = 1;
+}
+
+message PublishBatchGetResponse {
+  repeated Video list = 1;
+}
+
+message Video{
+  int64 Id = 1;
+  int64 AuthorId =2;
+  string PlayUrl = 3;
+  string CoverUrl =4;
+  int64 FavoriteCount =5;
+  int64 CommentCount =6;
+  string Title = 7;
+}
+
+service PublishService {
+  rpc Action(PublishActionRequest) returns (PublishActionResponse);
+  rpc List(PublishListRequest) returns (PublishListResponse);
+  rpc BatchGet(PublishBatchGetRequest) returns (PublishBatchGetResponse);
+
+}

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option go_package = ".;pb";
+package pb;
+
+//import "pb/user.proto";
+
+message CommentActionRequest {
+  int64 videoID = 1;
+  int64 userID = 2;
+  int64 ActionType = 3;
+  string  CommentText = 4;
+  int64  CommentID = 5;
+
+}
+
+message CommentActionResponse {
+     int64  CommentID = 1;
+}
+
+message CommentListRequest {
+  int64 videoID = 1;
+}
+
+message CommentListResponse {
+  repeated Comment list = 1;
+}
+
+message Comment{
+    int64 Id = 1;
+    int64 UserId = 2;
+    int64 VideoId = 3;
+    string content = 4;
+    string createDate = 5;
+}
+
+service CommentService {
+  rpc Action(CommentActionRequest) returns (CommentActionResponse);
+  rpc List(CommentListRequest) returns (CommentListResponse);
+}

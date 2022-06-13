@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 
-	"github.com/offer10/byte-douyin/basic-server/conf"
+	"github.com/offer10/byte-douyin/relation-server/conf"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -13,7 +13,6 @@ import (
 func RegisterMySQL() {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%s&loc=%s",
-		//"root", "1234", "127.0.0.1", 3306, "byte-douyin", "utf8mb4", "true", "Local",
 		"root", "123456", "127.0.0.1", 3306, "byte-douyin", "utf8mb4", "true", "Local",
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{

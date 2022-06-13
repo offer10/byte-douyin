@@ -10,6 +10,7 @@ message FavoriteActionRequest {
 }
 
 message FavoriteActionResponse {
+
 }
 
 message FavoriteListRequest {

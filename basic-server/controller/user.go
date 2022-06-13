@@ -47,3 +47,34 @@ func (p *UserServerImpl) Register(ctx context.Context, req *pb.UserRegisterReque
 	}
 	return reply, nil
 }
+
+func (p *UserServerImpl) Get(ctx context.Context, req *pb.UserGetRequest) (*pb.UserGetResponse, error) {
+	isFollow, err := UserService.IsFollow(req.UserID, req.SeeId)
+	if err != nil {
+		return nil, err
+	}
+	user, err := UserService.Get(req.UserID)
+	if err != nil {
+		return nil, err
+	}
+	var reply pb.UserGetResponse
+	if user != nil {
+		reply = pb.UserGetResponse{
+			Id:            user.ID,
+			Name:          user.Username,
+			FollowCount:   user.FollowCount,
+			FollowerCount: user.FollowerCount,
+			IsFollow:      isFollow,
+		}
+	} else {
+		reply = pb.UserGetResponse{
+			Id:            0,
+			Name:          "",
+			FollowCount:   0,
+			FollowerCount: 0,
+			IsFollow:      false,
+		}
+	}
+
+	return &reply, nil
+}

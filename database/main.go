@@ -12,6 +12,10 @@ import (
 func autoMigrate(db *gorm.DB) {
 	err := db.AutoMigrate(
 		model.User{},
+		model.Favorite{},
+		model.Relation{},
+		model.Video{},
+		model.Comment{},
 	)
 	if err != nil {
 		log.Panicf("数据库迁移异常: %v", err)
