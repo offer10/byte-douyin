@@ -24,9 +24,14 @@ func (p *CommentServerImpl) Action(ctx context.Context, req *pb.CommentActionReq
 		if err := CommentService.Create(&com); err != nil {
 			return nil, err
 		}
-		id := int64(com.ID)
 		return &pb.CommentActionResponse{
-			CommentID: id,
+			Comment: &pb.Comment{
+				Id:         com.ID,
+				UserId:     com.UserId,
+				VideoId:    com.VideoId,
+				Content:    com.Content,
+				CreateDate: com.CreatedAt.Format("2006-01-02"),
+			},
 		}, nil
 	} else {
 

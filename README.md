@@ -34,4 +34,7 @@ go mod tidy
 ```
 
 ## 开始使用
-两个控制台分别输入 `go run basic-server/server.go` 和 `go run api-client/main.go`
+打开四个控制台分别输入 `go run api-client/main.go` 和 `go run basic-server/main.go`  和   `go run interaction-server/main.go` 和  `go run relation-server/main.go`
+
+
+

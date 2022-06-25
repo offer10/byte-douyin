@@ -15,7 +15,7 @@ message CommentActionRequest {
 }
 
 message CommentActionResponse {
-     int64  CommentID = 1;
+   Comment  Comment = 1;
 }
 
 message CommentListRequest {

@@ -51,10 +51,16 @@ func (u CommentController) Action(ctx *gin.Context) {
 			})
 			return
 		}
+		user, _ := GetUser(ctx, resp.Comment.UserId, GetLoginUserId(ctx))
 		ctx.JSON(http.StatusOK, gin.H{
 			"status_code": 0,
 			"status_msg":  "",
-			"comment_id":  resp.CommentID,
+			"comment": response.Comment{
+				Id:         resp.Comment.Id,
+				Content:    resp.Comment.Content,
+				CreateDate: resp.Comment.CreateDate,
+				User:       user,
+			},
 		})
 	} else {
 		_, err := service.CommentClient.Action(ctx, &pb.CommentActionRequest{

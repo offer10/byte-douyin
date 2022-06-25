@@ -3,16 +3,17 @@ package controller
 import (
 	"crypto/md5"
 	"fmt"
+	"mime/multipart"
+	"net/http"
+	"path"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
 	"github.com/offer10/byte-douyin/basic-server/conf"
 	"github.com/offer10/byte-douyin/pb"
-	"mime/multipart"
-	"net/http"
-	"path"
-	"time"
 )
 
 type IPublishController interface {
@@ -27,7 +28,7 @@ func NewPublishController() IPublishController {
 }
 
 func (u PublishController) Action(ctx *gin.Context) {
-	form, err := ctx.MultipartForm()
+	form, _ := ctx.MultipartForm()
 	title := form.Value["title"]
 	userId := GetLoginUserId(ctx)
 	file, err := ctx.FormFile("data")

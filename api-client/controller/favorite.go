@@ -1,10 +1,12 @@
 package controller
 
 import (
-	"github.com/offer10/byte-douyin/api-client/response"
 	"net/http"
 
+	"github.com/offer10/byte-douyin/api-client/response"
+
 	"context"
+
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/service"
@@ -75,7 +77,7 @@ func (u FavoriteController) List(ctx *gin.Context) {
 		return
 	}
 
-	resp2, err := service.PublishClient.BatchGet(ctx, &pb.PublishBatchGetRequest{
+	resp2, _ := service.PublishClient.BatchGet(ctx, &pb.PublishBatchGetRequest{
 		Ids: resp1.List,
 	})
 

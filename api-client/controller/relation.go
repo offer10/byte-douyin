@@ -1,14 +1,13 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
-	"github.com/offer10/byte-douyin/database/model"
 	"github.com/offer10/byte-douyin/pb"
-	"github.com/offer10/byte-douyin/relation-server/conf"
-	"net/http"
 )
 
 type IRelationController interface {
@@ -33,7 +32,7 @@ func (u RelationController) Action(ctx *gin.Context) {
 		return
 	}
 	_, err := service.RelationClient.Action(ctx, &pb.RelationActionRequest{
-		UserID:     payload.UserId,
+		UserID:     ctx.GetInt64("user_id"),
 		FollowID:   payload.FollowId,
 		ActionType: payload.ActionType,
 	})
@@ -117,17 +116,4 @@ func (u RelationController) FollowerList(ctx *gin.Context) {
 		"status_msg":  "",
 		"user_list":   followerList,
 	})
-}
-
-//
-func GetUserByID(req *request.RelationFollowListRequest) (*response.User, error) {
-	var user model.User
-	res := &response.User{}
-	conf.MySQL.First(&user, req.UserId)
-	res.Name = user.Username
-	res.Id = int64(user.ID)
-	res.FollowCount = user.FollowCount
-	res.FollowerCount = user.FollowerCount
-	res.IsFollow = true
-	return res, nil
 }
