@@ -3,18 +3,17 @@ package controller
 import (
 	"crypto/md5"
 	"fmt"
-	"mime/multipart"
-	"net/http"
-	"path"
-	"strconv"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
 	"github.com/offer10/byte-douyin/basic-server/conf"
 	"github.com/offer10/byte-douyin/pb"
+	"mime/multipart"
+	"net/http"
+	"path"
+	"strconv"
+	"time"
 )
 
 type IPublishController interface {

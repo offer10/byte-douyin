@@ -66,7 +66,7 @@ func (u UserService) IsFollow(userId int64, seeId int64) (isFollow bool, err err
 //获取关注数量
 func (f UserService) GetFollowCountByID(userID int64) (count int64) {
 	conf.MySQL.Model(&model.Relation{}).
-		Where("follow_id = ?", userID).
+		Where("user_id = ?", userID).
 		Count(&count)
 	return count
 }

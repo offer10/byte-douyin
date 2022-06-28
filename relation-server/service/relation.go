@@ -3,9 +3,11 @@ package service
 import (
 	"github.com/offer10/byte-douyin/database/model"
 	"github.com/offer10/byte-douyin/relation-server/conf"
+	"gorm.io/gorm"
 )
 
 type IRelationService interface {
+	Get(re *model.Relation) error
 	AddFollow(rel *model.Relation) error
 	UnFollow(rel *model.Relation) error
 	GetFollowByID(userID int64) (followIds []int64, err error)
@@ -19,6 +21,18 @@ func NewRelationService() IRelationService {
 	return RelationService{}
 }
 
+func (f RelationService) Get(rel *model.Relation) error {
+	if err := conf.MySQL.Model(&model.Relation{}).
+		Where("user_id = ? AND follow_id = ?", rel.UserId, rel.FollowId).
+		First(&rel).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
+		return err
+	}
+	return nil
+}
+
 //添加关注
 func (f RelationService) AddFollow(rel *model.Relation) (err error) {
 	if err = conf.MySQL.Create(&rel).Error; err != nil {
@@ -29,7 +43,7 @@ func (f RelationService) AddFollow(rel *model.Relation) (err error) {
 
 //取消关注
 func (f RelationService) UnFollow(rel *model.Relation) (err error) {
-	if err = conf.MySQL.Where("user_id = ? AND follow_id", rel.UserId, rel.FollowId).
+	if err = conf.MySQL.Where("user_id = ? AND follow_id = ?", rel.UserId, rel.FollowId).
 		Delete(&model.Relation{}).Error; err != nil {
 		return err
 	}
@@ -51,7 +65,7 @@ func (f RelationService) GetFollowByID(userID int64) (followIds []int64, err err
 //获取关注数量
 func (f RelationService) GetFollowCountByID(userID int64) (count int64) {
 	conf.MySQL.Model(&model.Relation{}).
-		Where("userid = ?", userID).
+		Where("user_id = ?", userID).
 		Count(&count)
 	return count
 }

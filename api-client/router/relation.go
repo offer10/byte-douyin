@@ -16,5 +16,4 @@ func RegisterRelationRouter(r *gin.RouterGroup) {
 		group.GET("follow/list/", relationController.FollowList)
 		group.GET("follower/list/", relationController.FollowerList)
 	}
-
 }

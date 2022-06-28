@@ -1,13 +1,12 @@
 package controller
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
 	"github.com/offer10/byte-douyin/pb"
+	"net/http"
 )
 
 type IRelationController interface {
@@ -23,7 +22,8 @@ func NewRelationController() IRelationController {
 
 func (u RelationController) Action(ctx *gin.Context) {
 	payload := request.RelationActionRequest{}
-	if err := ctx.ShouldBindJSON(&payload); err != nil {
+	payload.UserId = GetLoginUserId(ctx)
+	if err := ctx.ShouldBindQuery(&payload); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
@@ -32,7 +32,7 @@ func (u RelationController) Action(ctx *gin.Context) {
 		return
 	}
 	_, err := service.RelationClient.Action(ctx, &pb.RelationActionRequest{
-		UserID:     ctx.GetInt64("user_id"),
+		UserID:     payload.UserId,
 		FollowID:   payload.FollowId,
 		ActionType: payload.ActionType,
 	})

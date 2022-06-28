@@ -20,14 +20,19 @@ func (p *RelationServiceImpl) Action(ctx context.Context, req *pb.RelationAction
 		FollowId: req.FollowID,
 	}
 	if req.ActionType == 1 {
-		if err := RelationService.AddFollow(&rel); err != nil {
+		if err := RelationService.Get(&rel); err != nil {
 			return nil, err
+		}
+		// 无关注记录，插入一条
+		if rel.ID == 0 {
+			if err := RelationService.AddFollow(&rel); err != nil {
+				return nil, err
+			}
 		}
 	} else if req.ActionType == 2 {
 		if err := RelationService.UnFollow(&rel); err != nil {
 			return nil, err
 		}
-		RelationService.UnFollow(&rel)
 	}
 	return &pb.RelationActionResponse{}, nil
 }

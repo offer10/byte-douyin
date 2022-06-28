@@ -1,12 +1,10 @@
 package controller
 
 import (
+	"github.com/offer10/byte-douyin/api-client/response"
 	"net/http"
 
-	"github.com/offer10/byte-douyin/api-client/response"
-
 	"context"
-
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/service"
