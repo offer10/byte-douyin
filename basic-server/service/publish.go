@@ -40,7 +40,7 @@ func (u PublishService) Get(id int64) (m *model.Video, err error) {
 func (u PublishService) BatchGet(ids []int64) (list []model.Video, err error) {
 	if err := conf.MySQL.Model(&model.Video{}).
 		Where("id IN (?)", ids).
-		First(&list).Error; err != nil {
+		Find(&list).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return list, nil
 		}

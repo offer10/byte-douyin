@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -30,11 +31,13 @@ func NewPublishController() IPublishController {
 func (u PublishController) Action(ctx *gin.Context) {
 	form, _ := ctx.MultipartForm()
 	title := form.Value["title"]
-	userId := GetLoginUserId(ctx)
-	file, err := ctx.FormFile("data")
-	if err != nil {
+	authorID := form.Value["author_id"]
+	userId, err1 := strconv.ParseInt(authorID[0], 10, 64)
+
+	file, err2 := ctx.FormFile("file")
+	if err1 != nil || err2 != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error":       err.Error(),
+			"error":       err2.Error(),
 			"status_code": http.StatusBadRequest,
 			"status_msg":  nil,
 		})
