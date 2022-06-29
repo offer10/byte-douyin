@@ -24,6 +24,9 @@ func (p *CommentServerImpl) Action(ctx context.Context, req *pb.CommentActionReq
 		if err := CommentService.Create(&com); err != nil {
 			return nil, err
 		}
+		if err := CommentService.UpdateAdd(&com); err != nil {
+			return nil, err
+		}
 		return &pb.CommentActionResponse{
 			Comment: &pb.Comment{
 				Id:         com.ID,
@@ -42,6 +45,9 @@ func (p *CommentServerImpl) Action(ctx context.Context, req *pb.CommentActionReq
 				ID: req.CommentID},
 		}
 		if err := CommentService.Delete(&com); err != nil {
+			return nil, err
+		}
+		if err := CommentService.UpdateSub(&com); err != nil {
 			return nil, err
 		}
 		return &pb.CommentActionResponse{}, nil
