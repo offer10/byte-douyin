@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
 	"github.com/offer10/byte-douyin/pb"
-	"net/http"
 )
 
 type IRelationController interface {
@@ -40,7 +41,7 @@ func (u RelationController) Action(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
-			"status_msg":  nil,
+			"status_msg":  "操作执行错误",
 		})
 		return
 	}

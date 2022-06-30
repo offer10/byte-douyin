@@ -3,17 +3,17 @@ package controller
 import (
 	"crypto/md5"
 	"fmt"
+	"mime/multipart"
+	"net/http"
+	"path"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/offer10/byte-douyin/api-client/request"
 	"github.com/offer10/byte-douyin/api-client/response"
 	"github.com/offer10/byte-douyin/api-client/service"
 	"github.com/offer10/byte-douyin/basic-server/conf"
 	"github.com/offer10/byte-douyin/pb"
-	"mime/multipart"
-	"net/http"
-	"path"
-	"strconv"
-	"time"
 )
 
 type IPublishController interface {
@@ -30,13 +30,12 @@ func NewPublishController() IPublishController {
 func (u PublishController) Action(ctx *gin.Context) {
 	form, _ := ctx.MultipartForm()
 	title := form.Value["title"]
-	authorID := form.Value["author_id"]
-	userId, err1 := strconv.ParseInt(authorID[0], 10, 64)
+	userId := ctx.GetInt64("user_id")
 
-	file, err2 := ctx.FormFile("file")
-	if err1 != nil || err2 != nil {
+	file, err := ctx.FormFile("file")
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error":       err2.Error(),
+			"error":       err.Error(),
 			"status_code": http.StatusBadRequest,
 			"status_msg":  nil,
 		})
